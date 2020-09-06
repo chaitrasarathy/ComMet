@@ -1,0 +1,104 @@
+---
+title: "modules_networks"
+author: "chaitra_sarathy"
+date: "6 Sep 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+dirname(rstudioapi::getActiveDocumentContext()$path)
+
+
+# file names for unconstrained network
+fileName_graph_un = "allPCs_un_graph.txt"
+fileName_att_un = "allPCs_un_att.txt"
+
+# file names for constrained network
+fileName_graph_con = "allPCs_con_graph.txt"
+fileName_att_con = "allPCs_con_att.txt"
+
+# file names for independent PCs 16 May 2020
+fileName_graph_sin_con = "distPCs_un_graph.txt"
+fileName_att_sin_con = "distPCs_un_att.txt"
+
+fileName_graph_sin_un = "distPCs_con_graph.txt"
+fileName_att_sin_un = "distPCs_con_att.txt"
+
+
+```
+
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
+BiocManager::install("RCy3")
+library(RCy3)
+
+cytoscapePing()
+```
+
+Import graph
+```{r}
+# unconstrained network
+graphTable_un <- read.table(fileName_graph_un, sep=";", skip = 1, stringsAsFactors = FALSE)
+attTable_un <- read.table(fileName_att_un, sep=";", skip = 1, stringsAsFactors = FALSE)
+
+colnames(graphTable_un) <- c("source", "target", "interaction","metaboliteName")
+colnames(attTable_un) <- c("id", "subsystem", "PCs", "numPCs")
+suid_un <- createNetworkFromDataFrames(nodes = attTable_un, edges = graphTable_un,
+  title = "allPCs_un",
+  collection = "allPCs")
+
+# constrained network
+graphTable_con <- read.table(fileName_graph_con, sep=";", skip = 1, stringsAsFactors = FALSE)
+attTable_con <- read.table(fileName_att_con, sep=";", skip = 1, stringsAsFactors = FALSE)
+
+colnames(graphTable_con) <- c("source", "target", "interaction","metaboliteName")
+colnames(attTable_con) <- c("id", "subsystem", "PCs", "numPCs")
+suid_con <- createNetworkFromDataFrames(nodes = attTable_con, edges = graphTable_con,
+  title = "allPCs_con",
+  collection = "allPCs") 
+```
+
+```{r}
+# distinct network
+graphTable_sin_un <- read.table(fileName_graph_sin_un, sep=";", skip = 1, stringsAsFactors = FALSE)
+attTable_sin_un <- read.table(fileName_att_sin_un, sep=";", skip = 1, stringsAsFactors = FALSE)
+graphTable_sin_con <- read.table(fileName_graph_sin_con, sep=";", skip = 1, stringsAsFactors = FALSE)
+attTable_sin_con <- read.table(fileName_att_sin_con, sep=";", skip = 1, stringsAsFactors = FALSE)
+
+colnames(graphTable_sin_un) <- c("source", "target", "interaction","metaboliteName")
+colnames(attTable_sin_un) <- c("id", "subsystem", "PCs", "numPCs", "meanUn", "stdUn")
+colnames(graphTable_sin_con) <- c("source", "target", "interaction","metaboliteName")
+colnames(attTable_sin_con) <- c("id", "subsystem", "PCs", "numPCs", "meanCon", "stdCon")
+
+# join the attribute tables (by matching the combo of "id" & "subsystem")
+attTable_sin_common <-merge(x=attTable_sin_un,y=attTable_sin_con,by=c("id", "subsystem"),all=TRUE)
+# rename columns .x=_un and .y=_con
+colnames(attTable_sin_common) <- gsub("\\.x", "_un", colnames(attTable_sin_common))
+colnames(attTable_sin_common) <- gsub("\\.y", "_con", colnames(attTable_sin_common))
+
+# add new column to attTable: assign value to the type of node: "un", "con" or "both"
+unIDs = which(attTable_sin_common$id %in% attTable_sin_un$id)
+attTable_sin_common[unIDs, "type"] = "un"
+conIDs = which(attTable_sin_common$id %in% attTable_sin_con$id)
+attTable_sin_common[conIDs, "type"] = "con"
+bothIDs = which(attTable_sin_common$id %in% intersect(attTable_sin_con$id, attTable_sin_un$id))
+attTable_sin_common[bothIDs, "type"] = "both"
+
+# merge graph tables by the combo of source and target 
+graphTable_sin_common <- merge(x=graphTable_sin_un, y=graphTable_sin_con, by=c("source", "target", "interaction", "metaboliteName"), all=T)
+colnames(graphTable_sin_common) <- gsub("\\.x", "_un", colnames(graphTable_sin_common))
+colnames(graphTable_sin_common) <- gsub("\\.y", "_con", colnames(graphTable_sin_common))
+
+```
+
+```{r}
+# create network using the two merged tables
+suid_sin <- createNetworkFromDataFrames(nodes = attTable_sin_common, edges = graphTable_sin_common,
+  title = "distinctPCs",
+  collection = "combined_un_con") 
+```
