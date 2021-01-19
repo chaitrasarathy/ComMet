@@ -22,11 +22,11 @@ fileName_graph_con = "allPCs_con_graph.txt"
 fileName_att_con = "allPCs_con_att.txt"
 
 # file names for independent PCs 16 May 2020
-fileName_graph_sin_con = "distPCs_un_graph.txt"
-fileName_att_sin_con = "distPCs_un_att.txt"
+fileName_graph_sin_con = "distPCs_con_graph.txt"
+fileName_att_sin_con = "distPCs_con_att.txt"
 
-fileName_graph_sin_un = "distPCs_con_graph.txt"
-fileName_att_sin_un = "distPCs_con_att.txt"
+fileName_graph_sin_un = "distPCs_un_graph.txt"
+fileName_att_sin_un = "distPCs_un_att.txt"
 
 
 ```
