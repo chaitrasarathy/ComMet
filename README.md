@@ -9,10 +9,10 @@ ComMet is a method based on genome-scale metabolic models for comparing differen
 
 ## Dependencies
 Please follow the instructions on the respective pages
-# Toolboxes
+### Toolboxes
 - [COBRA](https://github.com/opencobra/cobratoolbox/)
 - [Icasso](https://research.ics.aalto.fi/ica/icasso/)
-# MATLAB functions  
+### MATLAB functions  
  - [insertrows](https://nl.mathworks.com/matlabcentral/fileexchange/9984-insertrows)
  - [knee point](https://nl.mathworks.com/matlabcentral/fileexchange/35094-knee-point)
 
