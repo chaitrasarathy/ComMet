@@ -30,8 +30,8 @@ graphTab = createGraphFile(subModel_woUb);
 % create attribute file
 attTab = createAttribFile(modelEP, subModel_woUb, singleModuleRxnInds, singlesIDs);
 
-% writetable(graphTab, graphFileName, 'Delimiter', ';');
-% writetable(attTab, attFileName, 'Delimiter', ';');
+writetable(graphTab, graphFileName, 'Delimiter', ';');
+writetable(attTab, attFileName, 'Delimiter', ';');
 
 end
 

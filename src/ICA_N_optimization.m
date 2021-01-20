@@ -14,14 +14,22 @@ pcs_all_rem = filterLowLoadingsReactions(pcs_all)'; % 4061 to 1803 rxns
 % symmetric estimation approach)
 
 numIter = 100;
-numComps = [2:1:101];
+numComps = [2:1:90, 95, 100];
 
 for uu = 1:length(numComps)
-    tic;
-    boot_ica = icassoEst('both', pcs_all_rem, numIter, 'g', 'pow3', 'approach', 'symm', 'lastEig', numComps(uu));
-    end_time_boot = toc;
+    failed = 'true';
+    while strcmp(failed, 'true')
+        try
+            tic;
+            boot_ica = icassoEst('both', pcs_all_rem, numIter, 'g', 'pow3', 'approach', 'symm', 'lastEig', numComps(uu));
+            end_time_boot = toc; 
+            failed = 'false';
+            break;
+        end
+    end    
     sR = icassoExp(boot_ica);
     end_time_sR = toc;
     save(['Results_nComps_',num2str(numComps(uu)),'.mat'],'boot_ica','sR',...
         'end_time_boot','end_time_sR');
+    clear('boot_ica','sR','end_time_boot','end_time_sR');
 end
