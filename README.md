@@ -1,3 +1,5 @@
+<img src="commet_logo.png" width="250" align="right" />
+
 # ComMet (COMparison of METabolic states) [![DOI](https://zenodo.org/badge/291652692.svg)](https://zenodo.org/badge/latestdoi/291652692)
 ComMet is a method based on genome-scale metabolic models for comparing different metabolic states 
 
