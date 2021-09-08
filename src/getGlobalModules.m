@@ -11,12 +11,7 @@ module_uniqRxns = unique(cell2mat(singleModuleRxnInds));
 inds = find(contains(model.rxns, modelEP.rxns(module_uniqRxns)));
 
 % extract submodel of module rxns
-% subModel = efmSubmodelExtractionAsSBML_raven(iAdipo_ex, inds);
-% metaboliteList = subModel.mets(find(ismember(subModel.metNames, ubiquitousMets)));
-% subModel_woUb = removeMetabolites(subModel, metaboliteList, 0);
-
 subModel = efmSubmodelExtractionAsSBML_raven(modelEP, module_uniqRxns);
-% subModel2 = efmSubmodelExtractionAsSBML_raven(modelEP, module_uniqRxns, true, ubiquitousMets);
 
 % remove reactions that contain only ubiquitous metabolites
 subModel_woUb = removeMets(subModel, ubiquitousMets, true, true);
@@ -30,8 +25,8 @@ graphTab = createGraphFile(subModel_woUb);
 % create attribute file
 attTab = createAttribFile(modelEP, subModel_woUb, singleModuleRxnInds, singlesIDs);
 
-% writetable(graphTab, graphFileName, 'Delimiter', ';');
-% writetable(attTab, attFileName, 'Delimiter', ';');
+writetable(graphTab, graphFileName, 'Delimiter', ';');
+writetable(attTab, attFileName, 'Delimiter', ';');
 
 end
 

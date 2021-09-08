@@ -1,4 +1,4 @@
-function [rotatedComp, numRot_perVar, sortedVariance, cols] = getPCs(covMatrix, var)
+function [rotatedComp, numRot_perVar, sortedVariance, cols, rem] = getPCs(covMatrix, var)
 % This function takes a covariance matrix, computes its principal components and rotates
 % the components that explain certain (ex. 99.9%) variation in the sampled space
 %
@@ -25,22 +25,13 @@ function [rotatedComp, numRot_perVar, sortedVariance, cols] = getPCs(covMatrix, 
 % ..Author: 
 %   Chaitra Sarathy, 31 Aug 2020 (initial commit of ComMet)
 
-
-% mean centring the sampled data points
-% for ii=1:size(data,1)
-%     meanCentred(ii,:) = data(ii,:)-mean(data(ii,:));
-% end
-
-
 % basis rotation (PCA) with cols=variables(rxns), rows=sampled datapoints
-% [coeff,newdata,latend,tsd,variance] = pca(meanCentred');
-% "coeff" are the principal component vectors. These are the eigenvectors of the covariance matrix. 
+
 tic
 [coeff,D] = eig(covMatrix);
 
 % calculate variance explained by normalizing eigen values
 variance = D / sum(D(:));
-% aa=sort(diag(D),'descend');
 
 % sort the variances
 eigVals = diag(variance)*100;
@@ -50,27 +41,24 @@ sortedVariance = sort(eigVals,'descend');
 numRot = length(find(cumsum(sortedVariance)<=var));
 cols = cell2mat(arrayfun(@(x) find(eigVals == x), sortedVariance(1:numRot),'uni', 0)) ;
 
-
-% numRot = length(find(cumsum(variance)<=95));
-% Code for generating plot of variance vs numPCs
+% cumulative variance
 numRot_perVar=[];
 num = 0:0.1:99.9;
 for tt=1:length(num)
     numRot_perVar(tt) = length(find(cumsum(sortedVariance)<=num(tt)));
 end
-plot(numRot_perVar,num, '*')
-% prepare the coefficients for rotation, select the components explaining
-% 99.9% variation and then rotate
-% EROOR FIX: 'svd infinity' error was due to zeros in the coeff matrix, so remove zeros
-[a,~] = find(coeff(:,cols)==0);
-forRotation = coeff(:,cols);
-forRotation(unique(a),:)=[]; 
+
 % varimax rotation
-% ERROR FIX: Passing 'Maxit', 1500 fixes the Error: Iteration limit exceeded for factor rotation.
+[rem,~] = find(coeff(:,cols)==0);
+forRotation = coeff(:,cols);
+forRotation(unique(rem),:)=[]; 
 rotatedComp = rotatefactors(forRotation, 'Maxit', 1000, 'Normalize', 'off');
 
 toc
 tPCA_Rot=toc;
+
+% re-insert the removed rows to maintain consistency in indices
+rotatedComp = insertrows(rotatedComp,zeros(1,size(rotatedComp,2)),unique(rem));
 
 end
 

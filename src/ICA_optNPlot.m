@@ -1,4 +1,12 @@
-
+% This script plots the stability of all bootstrapped independent 
+% components to identify the optimum N for the dataset
+% Adapted from: 
+    % Kairov U, Cantini L, Greco A, Molkenov A, Czerwinska U, Barillot E, et al.
+        % Determining the optimal number of independent components for reproducible
+        % transcriptomic data analysis. BMC Genomics. 2017;18(1).
+        % doi:10.1186/s12864-017-4112-9.
+    % Kairov U, Zinovyev A, Molkenov A. BIODICA GitHub page
+    % (https://github.com/LabBandSB/BIODICA/); 2017. 
 figure
 mat = dir('R*.mat'); 
 for q = 1:length(mat) 

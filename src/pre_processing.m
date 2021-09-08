@@ -37,6 +37,7 @@ function model = pre_processing(model0)
         sol = linprog(ei,[],[],model0.S,model0.b,model0.lb, model0.ub, [], options);
         lb(i) = max(model0.lb(i), sol(i));
         sol = linprog(-ei,[],[],model0.S,model0.b,model0.lb, model0.ub, [], options);
+%         fprintf('%d\n',i)
         ub(i) = min(model0.ub(i), sol(i));
         ei(i) = 0;
     end
