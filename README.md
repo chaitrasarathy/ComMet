@@ -18,6 +18,10 @@ Please follow the instructions on the respective pages
  - [insertrows](https://nl.mathworks.com/matlabcentral/fileexchange/9984-insertrows)
  - [knee point](https://nl.mathworks.com/matlabcentral/fileexchange/35094-knee-point)
 
+## Publication
+Sarathy C, Breuer M, Kutmon M, Adriaens ME, Evelo CT, Arts ICW (2021) Comparison of metabolic states using genome-scale metabolic models. PLoS Comput Biol 17(11): e1009522.
+https://doi.org/10.1371/journal.pcbi.1009522
+
 ## Preprint
 Sarathy C et al., ComMet: A method for comparing metabolic states in genome-scale metabolic models. bioRxiv, Cold Spring Harbour Laboratory. 2020. https://doi.org/10.1101/2020.09.14.296145
 
